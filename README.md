@@ -49,5 +49,8 @@ spread shot, or a blue ring that shields the lantern for ten seconds.
 - `game/src/sound.js` — WebAudio oscillator sounds, no sound files
 - `game/src/input.js` — keyboard and mouse state
 - `main.ts` — copies `game/` and `screenshots/` to the output directory
-  and writes `dossier.json` with the kit's `buildDossier`
+  and writes `dossier.json` with the kit's `buildDossier`. It clears only
+  the contents of the output directory, never the directory itself, so it
+  works when the output directory is a mounted volume (removing a mount
+  point fails with EBUSY).
 - `vendor/makefun-game.ts` — the kit's dossier library, unchanged

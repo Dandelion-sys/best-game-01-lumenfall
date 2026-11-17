@@ -48,12 +48,18 @@ function copyTree(fromDir: string, toDir: string): void {
 
 function handIn(): void {
   // Start from a clean output directory so a second run writes the same bytes.
+  // Clear only the CONTENTS of outDir, never outDir itself: the grader
+  // mounts /output as a volume, and removing a mount point fails with
+  // EBUSY ("Device or resource busy"), which used to abort the whole run.
   if (existsSync(outDir)) {
     const stat = lstatSync(outDir);
     if (!stat.isDirectory()) throw new Error(`${outDir} exists and is not a directory`);
-    rmSync(outDir, { recursive: true, force: true });
+    for (const entry of readdirSync(outDir)) {
+      rmSync(join(outDir, entry), { recursive: true, force: true });
+    }
+  } else {
+    mkdirSync(outDir, { recursive: true });
   }
-  mkdirSync(outDir, { recursive: true });
 
   copyTree(join(repoRoot, 'game'), join(outDir, 'game'));
   copyTree(join(repoRoot, 'screenshots'), join(outDir, 'screenshots'));
